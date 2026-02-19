@@ -15,7 +15,6 @@ import java.util.HashMap;
 public class CurrencyConversionController {
 
     private final CurrencyExchangeProxy proxy;
-
     @GetMapping("/currency-conversion/from/{from}/to/{to}/quantity/{quantity}")
     public CurrencyConversion calculateCurrencyConversion(
             @PathVariable String from,
@@ -27,7 +26,7 @@ public class CurrencyConversionController {
         uriVariables.put("to", to);
 
         ResponseEntity<CurrencyConversion> entity =
-                new RestTemplate().getForEntity("http://localhost:8000/currency-exchange/from/{from}/to/{to}",
+                restTemplate.getForEntity("http://localhost:8000/currency-exchange/from/{from}/to/{to}",
                         CurrencyConversion.class, uriVariables);
         CurrencyConversion currencyConversion = entity.getBody();
 
@@ -36,6 +35,8 @@ public class CurrencyConversionController {
                 quantity.multiply(currencyConversion.getConversionMultiple()),
                 currencyConversion.getEnvironment() + " rest template");
     }
+
+    private final  RestTemplate restTemplate;
 
     @GetMapping("/currency-conversion-feign/from/{from}/to/{to}/quantity/{quantity}")
     public CurrencyConversion calculateCurrencyConversionFeign(
